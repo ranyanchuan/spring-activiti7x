@@ -20,12 +20,11 @@ public class BpmController extends BaseController {
 
 
     /**
-     * 流程部署
+     * 流程部署  act_re_deployment   ACT_RE_PROCDEF
      * todo 通过前端传递 bpmn 文件流
-     *
      * @return
      */
-    @RequestMapping("/deployment")
+    @RequestMapping("/add/deployment")
     @ResponseBody
     public Map<String, Object> addDeployment() {
         try {
@@ -39,15 +38,33 @@ public class BpmController extends BaseController {
 
 
     /**
-     * 查看流程定义
+     * 查看流程部署 act_re_deployment
      *
      * @return
      */
-    @RequestMapping("/definition")
+    @RequestMapping("/select/deployment")
+    @ResponseBody
+    public Map<String, Object> selectProcessDeployment(@RequestBody Map map) {
+        try {
+            Map newMap = this.bpmService.selectListProcessDeployment(map);
+            return this.buildSuccess(newMap);
+        } catch (Exception exp) {
+            System.out.println(exp);
+            return this.buildError(exp.getMessage());
+        }
+    }
+
+
+    /**
+     * 查看流程定义 ACT_RE_PROCDEF
+     *
+     * @return
+     */
+    @RequestMapping("/select/definition")
     @ResponseBody
     public Map<String, Object> selectProcessDefinition(@RequestBody Map map) {
         try {
-            Map newMap= this.bpmService.selectListProcessDefinition(map);
+            Map newMap = this.bpmService.selectListProcessDefinition(map);
             return this.buildSuccess(newMap);
         } catch (Exception exp) {
             System.out.println(exp);

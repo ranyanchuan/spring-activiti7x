@@ -11,6 +11,8 @@ public interface BpmService {
 
     void deployment(); // 流程部署
 
+    Map<String, Object> selectListProcessDeployment(Map map); // 查看流程部署信息
+
     Map<String, Object> selectListProcessDefinition(Map map); // 查看流程定义信息
 
 }

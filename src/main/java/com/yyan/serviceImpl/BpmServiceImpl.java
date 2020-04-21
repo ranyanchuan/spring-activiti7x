@@ -44,28 +44,61 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
         System.out.println(deployment.getId());
     }
 
+    /**
+     * 获取流程部署信息
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public Map<String, Object> selectListProcessDeployment(Map param) {
+        Map newParam = checkPageSize(param);
+        Integer pageIndex = (Integer) newParam.get("pageIndex");
+        Integer size = (Integer) newParam.get("size");
+
+        RepositoryService repositoryService = processEngine.getRepositoryService();
+        Integer count = Math.toIntExact(repositoryService.createDeploymentQuery().count());
+
+        List<Deployment> list = repositoryService.createDeploymentQuery().listPage(pageIndex * size, (pageIndex + 1) * size);
+
+        // 数据处理
+        List<Map> newList = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            Deployment deployment = list.get(i);
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", deployment.getId());
+            map.put("name", deployment.getName());
+            map.put("deploymentTime", deployment.getDeploymentTime());
+            newList.add(map);
+        }
+        return this.queryListSuccess(newList, count, param); //查询成功;
+    }
+
+
+    // 查看流程部署信息
+
 
     // 查看流程定义信息
     @Override
-    public  Map<String, Object> selectListProcessDefinition(Map param) {
+    public Map<String, Object> selectListProcessDefinition(Map param) {
 
 
-        Map newParam=checkPageSize(param);
-        Integer pageIndex= (Integer) newParam.get("pageIndex");
-        Integer size= (Integer) newParam.get("size");
+        Map newParam = checkPageSize(param);
+        Integer pageIndex = (Integer) newParam.get("pageIndex");
+        Integer size = (Integer) newParam.get("size");
 
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
 //        Integer count = this.blockDao.countListBlock(map);
         Integer count = Math.toIntExact(repositoryService.createProcessDefinitionQuery().count());
 
-
         //获取查询器
         ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
         List<ProcessDefinition> list = processDefinitionQuery
-                .orderByProcessDefinitionVersion().desc().listPage(pageIndex*size,(pageIndex+1)*size);
+                .orderByProcessDefinitionVersion().desc().listPage(pageIndex * size, (pageIndex + 1) * size);
 
-        List<Map> newList=new ArrayList<>();
+        List<Map> newList = new ArrayList<>();
 
         for (int i = 0; i < list.size(); i++) {
             ProcessDefinition processDefinition = list.get(i);
