@@ -10,6 +10,7 @@ public class BaseServiceImpl {
 
     //  查询成功数据组装
     public Map<String, Object> queryListSuccess(Object data, Integer count, Map param) {
+        param = checkPageSize(param); // 对分页信息处理
         Map<String, Object> map = new HashMap<>();
         map.put("data", data);
         map.put("pageIndex", param.get("pageIndex"));

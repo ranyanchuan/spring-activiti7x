@@ -3,7 +3,7 @@ package com.yyan.taskListener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-public class TestHelloListener implements TaskListener {
+public class LeaveBillListener implements TaskListener {
 
     /**用来指定任务的办理人*/
     @Override

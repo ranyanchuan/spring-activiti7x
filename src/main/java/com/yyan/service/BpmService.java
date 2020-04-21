@@ -1,13 +1,16 @@
 package com.yyan.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import org.activiti.engine.repository.ProcessDefinition;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BpmService {
 
-    void selectListProcessDefinition(List list); // 查看流程定义信息
 
+    void deployment(); // 流程部署
+
+    Map<String, Object> selectListProcessDefinition(Map map); // 查看流程定义信息
 
 }
