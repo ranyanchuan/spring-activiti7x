@@ -7,7 +7,6 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +20,8 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
 
     // 获取流程引擎
     private ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+    //2.得到RepositoryService实例
+    private RepositoryService repositoryService = processEngine.getRepositoryService();
 
 
     /**
@@ -28,15 +29,11 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
      */
     @Override
     public void deployment() {
-
-        //2.得到RepositoryService实例
-        RepositoryService repositoryService = processEngine.getRepositoryService();
-
         // 3.进行部署
         Deployment deployment = repositoryService.createDeployment()
                 .addClasspathResource("diagram.bpmn")  //添加bpmn资源
                 .addClasspathResource("diagram.svg")
-                .name("请假申请单流程")  // 流程部署名称
+                .name("请假申请单流程001")  // 流程部署名称
                 .deploy();
 
         //4.输出部署的一些信息
@@ -56,7 +53,7 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
         Integer pageIndex = (Integer) newParam.get("pageIndex");
         Integer size = (Integer) newParam.get("size");
 
-        RepositoryService repositoryService = processEngine.getRepositoryService();
+        // 获取流程部署总算
         Integer count = Math.toIntExact(repositoryService.createDeploymentQuery().count());
 
         List<Deployment> list = repositoryService.createDeploymentQuery().listPage(pageIndex * size, (pageIndex + 1) * size);
@@ -76,48 +73,41 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
     }
 
 
-    // 查看流程部署信息
-
-
     // 查看流程定义信息
     @Override
     public Map<String, Object> selectListProcessDefinition(Map param) {
-
 
         Map newParam = checkPageSize(param);
         Integer pageIndex = (Integer) newParam.get("pageIndex");
         Integer size = (Integer) newParam.get("size");
 
-        RepositoryService repositoryService = processEngine.getRepositoryService();
-
-//        Integer count = this.blockDao.countListBlock(map);
+        // 获取流程定义总算
         Integer count = Math.toIntExact(repositoryService.createProcessDefinitionQuery().count());
 
         //获取查询器
-        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
-        List<ProcessDefinition> list = processDefinitionQuery
+        List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery()
                 .orderByProcessDefinitionVersion().desc().listPage(pageIndex * size, (pageIndex + 1) * size);
 
         List<Map> newList = new ArrayList<>();
 
         for (int i = 0; i < list.size(); i++) {
             ProcessDefinition processDefinition = list.get(i);
-            System.out.println("流程定义id：" + processDefinition.getId());
-            System.out.println("流程定义名称：" + processDefinition.getName());
-            System.out.println("流程定义key：" + processDefinition.getKey());
-            System.out.println("流程定义版本：" + processDefinition.getVersion());
-            System.out.println("流程部署id：" + processDefinition.getDeploymentId());
             Map<String, Object> map = new HashMap<>();
-            map.put("id", processDefinition.getId());
-            map.put("name", processDefinition.getName());
-            map.put("key", processDefinition.getKey());
-            map.put("version", processDefinition.getVersion());
-            map.put("deploymentId", processDefinition.getDeploymentId());
+            map.put("id", processDefinition.getId()); // 流程定义id
+            map.put("name", processDefinition.getName());// 流程定义名称
+            map.put("key", processDefinition.getKey());// 流程定义key
+            map.put("version", processDefinition.getVersion());// 流程定义版本
+            map.put("deploymentId", processDefinition.getDeploymentId());// 流程部署id
             newList.add(map);
         }
-        System.out.println(newList);
-        System.out.println(count);
-
         return this.queryListSuccess(newList, count, param); //查询成功
     }
+
+    // 根据流程部署id删除流程部署信息
+    @Override
+    public void deleteProcessDeployment(String deploymentId) {
+        repositoryService.deleteDeployment(deploymentId,true);
+    }
+
+
 }

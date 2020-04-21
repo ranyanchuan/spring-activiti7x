@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
@@ -24,9 +25,9 @@ public class BpmController extends BaseController {
      * todo 通过前端传递 bpmn 文件流
      * @return
      */
-    @RequestMapping("/add/deployment")
+    @RequestMapping("/insert/deployment")
     @ResponseBody
-    public Map<String, Object> addDeployment() {
+    public Map<String, Object> insertDeployment() {
         try {
             this.bpmService.deployment();
             return this.buildSuccess();
@@ -35,6 +36,25 @@ public class BpmController extends BaseController {
             return this.buildError(exp.getMessage());
         }
     }
+
+
+
+    /**
+     * 流程删除  act_re_deployment   ACT_RE_PROCDEF
+     * @return
+     */
+    @RequestMapping("/delete/deployment")
+    @ResponseBody
+    public Map<String, Object> deleteDeployment(@RequestParam String deploymentId) {
+        try {
+            this.bpmService.deleteProcessDeployment(deploymentId);
+            return this.buildSuccess();
+        } catch (Exception exp) {
+            System.out.println(exp);
+            return this.buildError(exp.getMessage());
+        }
+    }
+
 
 
     /**
