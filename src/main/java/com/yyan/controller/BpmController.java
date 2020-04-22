@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -128,7 +129,7 @@ public class BpmController extends BaseController {
     }
 
     /**
-     * 查看自己代办任务
+     * 查看自己代办任务列表
      *
      * @return
      */
@@ -138,6 +139,22 @@ public class BpmController extends BaseController {
         try {
             Map newMap = this.bpmService.selectListSelfTask(map);
             return this.buildSuccess(newMap);
+        } catch (Exception exp) {
+            return this.buildError(exp.getMessage());
+        }
+    }
+
+    /**
+     * 查看自己代办任务列表
+     *
+     * @return
+     */
+    @RequestMapping("/select/comment")
+    @ResponseBody
+    public Map<String, Object> selectComment(@RequestBody Map map) {
+        try {
+            List list = this.bpmService.selectListCommentByTaskId(map);
+            return this.buildSuccess(list);
         } catch (Exception exp) {
             return this.buildError(exp.getMessage());
         }

@@ -6,7 +6,9 @@ import org.activiti.engine.*;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -141,16 +143,16 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
         String processDefinitionKey = map.get("processDefinitionKey"); // 流程key
         String formId = map.get("formId"); // 表单id
         // 生成 业务键
-        String businessKey = processDefinitionKey+":"+formId; //
+        String businessKey = processDefinitionKey + ":" + formId; //
 
         // 设置下一任务审批人
-        Map<String,Object> variable=new HashMap<>();
+        Map<String, Object> variable = new HashMap<>();
 
         // todo 从token 中获取
-        variable.put("username","laoda");
+        variable.put("username", "laoda");
 
         RuntimeService runtimeService = processEngine.getRuntimeService(); // 根据流程定义key启动流程
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey,businessKey,variable);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey, businessKey, variable);
 
         // todo 更新请假单信息
 
@@ -166,9 +168,9 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
 
         // todo 从token 中获取
         // 设置办理人
-        String assignee="laoda";
+        String assignee = "laoda";
         // 查询总数
-        Integer count= Math.toIntExact(taskService.createTaskQuery().taskAssignee(assignee).count());
+        Integer count = Math.toIntExact(taskService.createTaskQuery().taskAssignee(assignee).count());
 
         List<Task> list = this.taskService.createTaskQuery().taskAssignee(assignee).listPage(pageIndex * size, (pageIndex + 1) * size);
 
@@ -186,9 +188,42 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
             newList.add(map);
         }
 
+        // todo 根据任务ID查询表单新
+        // todo 根据任务ID查询连线信息
+        // todo 根据任务ID查询任务批准信息 act_hi_comment
         return this.queryListSuccess(newList, count, param); //查询成功
 
 
+    }
+
+    @Override
+    public List<Map> selectListCommentByTaskId(Map<String,Object> param) {
+
+        String taskId= (String) param.get("taskId");
+
+        // 1,根据任务ID查询任务实例
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        // 2,从任务里面取出流程实例ID
+        // todo 优化
+        String processInstanceId = task.getProcessInstanceId();
+        List<Comment> comments = taskService.getProcessInstanceComments(processInstanceId);
+
+        List<Map> newList = new ArrayList<>();
+        if (null != comments && comments.size() > 0) {
+            for (Comment comment : comments) {
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", comment.getId()); // 评论id
+                map.put("message", comment.getFullMessage()); // 评论信息
+                map.put("taskId", comment.getTaskId()); // 任务ID
+                map.put("processInstanceId", comment.getProcessInstanceId()); // 流程ID
+                map.put("userId", comment.getUserId()); // 用户ID
+                newList.add(map);
+
+            }
+        }
+
+        return newList;
     }
 
 

@@ -2,6 +2,7 @@ package com.yyan.service;
 
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public interface BpmService {
@@ -21,6 +22,8 @@ public interface BpmService {
     void startProcess(Map<String, String> map); // 启动流程
 
     Map<String, Object> selectListSelfTask(Map map); // 查看自己任务
+
+    List<Map> selectListCommentByTaskId(Map<String,Object> map); // 通过任务id 查询评论
 
 
 }
