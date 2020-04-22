@@ -1,11 +1,13 @@
 package com.yyan.serviceImpl;
 
+import com.yyan.pojo.LeaveBill;
 import com.yyan.service.BpmService;
 import com.yyan.utils.BaseServiceImpl;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -135,6 +137,27 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
     @Override
     public void deleteProcessDeployment(String deploymentId) {
         repositoryService.deleteDeployment(deploymentId, true);
+    }
+
+    @Override
+    public void startProcess(Map<String, String> map) {
+
+        String processDefinitionKey = map.get("processDefinitionKey"); // 流程key
+        String formId = map.get("formId"); // 表单id
+        // 生成 业务键
+        String businessKey = processDefinitionKey+":"+formId; //
+
+        // 设置下一任务审批人
+        Map<String,Object> variable=new HashMap<>();
+        variable.put("username","laoda");
+
+        RuntimeService runtimeService = processEngine.getRuntimeService(); // 根据流程定义key启动流程
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey,businessKey,variable);
+
+        // todo 更新请假单信息
+
+
+
     }
 
 

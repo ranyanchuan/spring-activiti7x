@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+
 
 @Controller
 @RequestMapping("/api/bpm/")
@@ -59,6 +59,22 @@ public class BpmController extends BaseController {
 
 
     /**
+     * 查看流程部署 act_re_deployment
+     *
+     * @return
+     */
+    @RequestMapping("/select/deployment")
+    @ResponseBody
+    public Map<String, Object> selectProcessDeployment(@RequestBody Map map) {
+        try {
+            Map newMap = this.bpmService.selectListProcessDeployment(map);
+            return this.buildSuccess(newMap);
+        } catch (Exception exp) {
+            return this.buildError(exp.getMessage());
+        }
+    }
+
+    /**
      * 查看流程图
      *
      * @return
@@ -78,24 +94,6 @@ public class BpmController extends BaseController {
 
 
     /**
-     * 查看流程部署 act_re_deployment
-     *
-     * @return
-     */
-    @RequestMapping("/select/deployment")
-    @ResponseBody
-    public Map<String, Object> selectProcessDeployment(@RequestBody Map map) {
-        try {
-            Map newMap = this.bpmService.selectListProcessDeployment(map);
-            return this.buildSuccess(newMap);
-        } catch (Exception exp) {
-            System.out.println(exp);
-            return this.buildError(exp.getMessage());
-        }
-    }
-
-
-    /**
      * 查看流程定义 ACT_RE_PROCDEF
      *
      * @return
@@ -107,7 +105,25 @@ public class BpmController extends BaseController {
             Map newMap = this.bpmService.selectListProcessDefinition(map);
             return this.buildSuccess(newMap);
         } catch (Exception exp) {
-            System.out.println(exp);
+            return this.buildError(exp.getMessage());
+        }
+    }
+
+
+
+
+    /**
+     * 启动流程，页面点击提交 act_ru_execution(流程实例表)
+     * todo 完成自己审批自己
+     * @return
+     */
+    @RequestMapping("/start/process")
+    @ResponseBody
+    public Map<String, Object> startProcess(@RequestBody Map map) {
+        try {
+            this.bpmService.startProcess(map);
+            return this.buildSuccess();
+        } catch (Exception exp) {
             return this.buildError(exp.getMessage());
         }
     }

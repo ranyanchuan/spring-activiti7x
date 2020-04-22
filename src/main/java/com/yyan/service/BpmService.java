@@ -19,5 +19,7 @@ public interface BpmService {
 
     void deleteProcessDeployment(String deploymentId); // 根据流程部署id删除流程部署信息
 
+    void startProcess(Map<String, String> map); // 启动流程
+
 
 }
