@@ -9,6 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
+
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 @Controller
@@ -54,6 +62,49 @@ public class BpmController extends BaseController {
             return this.buildError(exp.getMessage());
         }
     }
+
+
+
+    /**
+     * 流程删除  act_re_deployment   ACT_RE_PROCDEF
+     * @return
+     */
+    @RequestMapping("/select/processImg")
+    @ResponseBody
+    public void selectProcessImg(@RequestParam String deploymentId, HttpServletResponse response) {
+      InputStream stream= bpmService.selectProcessImg(deploymentId);
+
+        System.out.println("stream");
+        System.out.println(stream);
+
+        byte[] bytes = new byte[0];
+        try {
+            bytes = new byte[stream.available()];
+            stream.read(bytes);
+            String str = new String(bytes);
+            System.out.println("str");
+            System.out.println(str);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        try {
+
+            BufferedImage image=ImageIO.read(stream);
+
+            ServletOutputStream outputStream=response.getOutputStream();
+            ImageIO.write(image,"JPEG",outputStream);
+            stream.close();
+            outputStream.close();
+
+        } catch (Exception exp) {
+            System.out.println(exp);
+        }
+    }
+
 
 
 

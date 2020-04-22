@@ -2,17 +2,19 @@ package com.yyan.serviceImpl;
 
 import com.yyan.service.BpmService;
 import com.yyan.utils.BaseServiceImpl;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.*;
 
 @Service
 public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
@@ -72,6 +74,29 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
         return this.queryListSuccess(newList, count, param); //查询成功;
     }
 
+    /**
+     * 查看流程图
+     *
+     * @param deploymentId
+     * @return
+     */
+    @Override
+    public InputStream selectProcessImg(String deploymentId) {
+
+        // 查询流程定义对象
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
+        // 获取图片名称
+        String resourceName = processDefinition.getDiagramResourceName();
+        System.out.println("resourceName");
+        System.out.println(resourceName);
+
+        // 使用部署id和图片名称查询图片流
+        InputStream stream = repositoryService.getResourceAsStream(deploymentId, resourceName);
+        return stream;
+    }
+
+
+
 
     // 查看流程定义信息
     @Override
@@ -106,7 +131,7 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
     // 根据流程部署id删除流程部署信息
     @Override
     public void deleteProcessDeployment(String deploymentId) {
-        repositoryService.deleteDeployment(deploymentId,true);
+        repositoryService.deleteDeployment(deploymentId, true);
     }
 
 
