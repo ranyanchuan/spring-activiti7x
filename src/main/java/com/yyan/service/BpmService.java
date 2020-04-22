@@ -2,7 +2,6 @@ package com.yyan.service;
 
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 
 public interface BpmService {
@@ -20,6 +19,8 @@ public interface BpmService {
     void deleteProcessDeployment(String deploymentId); // 根据流程部署id删除流程部署信息
 
     void startProcess(Map<String, String> map); // 启动流程
+
+    Map<String, Object> selectListSelfTask(Map map); // 查看自己任务
 
 
 }

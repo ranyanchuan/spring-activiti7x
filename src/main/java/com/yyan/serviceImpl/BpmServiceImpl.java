@@ -1,18 +1,12 @@
 package com.yyan.serviceImpl;
 
-import com.yyan.pojo.LeaveBill;
 import com.yyan.service.BpmService;
 import com.yyan.utils.BaseServiceImpl;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.*;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.apache.commons.lang3.StringUtils;
+import org.activiti.engine.task.Task;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -27,6 +21,8 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
     private ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
     //2.得到RepositoryService实例
     private RepositoryService repositoryService = processEngine.getRepositoryService();
+    // 任务服务
+    private TaskService taskService = processEngine.getTaskService();
 
 
     /**
@@ -149,6 +145,8 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
 
         // 设置下一任务审批人
         Map<String,Object> variable=new HashMap<>();
+
+        // todo 从token 中获取
         variable.put("username","laoda");
 
         RuntimeService runtimeService = processEngine.getRuntimeService(); // 根据流程定义key启动流程
@@ -156,6 +154,39 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
 
         // todo 更新请假单信息
 
+
+    }
+
+    @Override
+    public Map<String, Object> selectListSelfTask(Map param) {
+
+        Map newParam = checkPageSize(param);
+        Integer pageIndex = (Integer) newParam.get("pageIndex");
+        Integer size = (Integer) newParam.get("size");
+
+        // todo 从token 中获取
+        // 设置办理人
+        String assignee="laoda";
+        // 查询总数
+        Integer count= Math.toIntExact(taskService.createTaskQuery().taskAssignee(assignee).count());
+
+        List<Task> list = this.taskService.createTaskQuery().taskAssignee(assignee).listPage(pageIndex * size, (pageIndex + 1) * size);
+
+        List<Map> newList = new ArrayList<>();
+        for (Task task : list) {
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", task.getId()); // 任务ID
+            map.put("name", task.getName());// 任务名称
+            map.put("createTime", task.getCreateTime());// 任务的创建时间
+            map.put("assignee", task.getAssignee());// 任务的办理人
+            map.put("processInstanceId", task.getProcessInstanceId());// 流程实例ID
+            map.put("executionId", task.getExecutionId());// 执行对象ID
+            map.put("processDefinitionId", task.getProcessDefinitionId());// 流程定义ID
+            newList.add(map);
+        }
+
+        return this.queryListSuccess(newList, count, param); //查询成功
 
 
     }

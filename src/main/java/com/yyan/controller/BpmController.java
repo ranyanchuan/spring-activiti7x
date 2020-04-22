@@ -110,11 +110,10 @@ public class BpmController extends BaseController {
     }
 
 
-
-
     /**
      * 启动流程，页面点击提交 act_ru_execution(流程实例表)
      * todo 完成自己审批自己
+     *
      * @return
      */
     @RequestMapping("/start/process")
@@ -127,5 +126,22 @@ public class BpmController extends BaseController {
             return this.buildError(exp.getMessage());
         }
     }
+
+    /**
+     * 查看自己代办任务
+     *
+     * @return
+     */
+    @RequestMapping("/select/self/task")
+    @ResponseBody
+    public Map<String, Object> selectTask(@RequestBody Map map) {
+        try {
+            Map newMap = this.bpmService.selectListSelfTask(map);
+            return this.buildSuccess(newMap);
+        } catch (Exception exp) {
+            return this.buildError(exp.getMessage());
+        }
+    }
+
 
 }
