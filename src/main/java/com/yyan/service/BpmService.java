@@ -28,5 +28,7 @@ public interface BpmService {
     void finishTask(Map<String,String> map); // 完成自己的任务
 
 
+    Map<String, Object> selectProcessImgByTaskId(String taskId); // 通过任务id 查看流程图
+
 
 }

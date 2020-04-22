@@ -275,9 +275,25 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
 //            this.billMapper.updateByPrimaryKeySelective(leaveBill);
         }
 
+    }
 
+    @Override
+    public Map<String, Object> selectProcessImgByTaskId(String taskId) {
 
+        // 1,根据任务ID查询任务实例
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        // 2,取出流程实例ID
+        String processInstanceId = task.getProcessInstanceId();
+        // 3,根据流程实例ID查询流程实例对象
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(processInstanceId).singleResult();
+        // 4，取出流程部署ID
+        String processDefinitionId = processInstance.getProcessDefinitionId();
+        // 5,查询流程定义对象
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionId(processDefinitionId).singleResult();
 
+        return null;
     }
 
 
