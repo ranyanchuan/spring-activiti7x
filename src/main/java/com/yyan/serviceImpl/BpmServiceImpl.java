@@ -13,6 +13,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -81,7 +82,7 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
      * @return
      */
     @Override
-    public InputStream selectProcessImg(String deploymentId) {
+    public String selectProcessImg(String deploymentId) throws IOException {
 
         // 查询流程定义对象
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
@@ -92,10 +93,12 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
 
         // 使用部署id和图片名称查询图片流
         InputStream stream = repositoryService.getResourceAsStream(deploymentId, resourceName);
-        return stream;
+        byte[] bytes;
+
+        bytes = new byte[stream.available()];
+        stream.read(bytes);
+        return new String(bytes);
     }
-
-
 
 
     // 查看流程定义信息
