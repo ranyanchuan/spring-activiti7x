@@ -25,5 +25,8 @@ public interface BpmService {
 
     List<Map> selectListCommentByTaskId(Map<String,Object> map); // 通过任务id 查询评论
 
+    void finishTask(Map<String,String> map); // 完成自己的任务
+
+
 
 }

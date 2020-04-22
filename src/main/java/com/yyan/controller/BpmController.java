@@ -76,7 +76,7 @@ public class BpmController extends BaseController {
     }
 
     /**
-     * 查看流程图
+     *    通过部署id查看流程图
      *
      * @return
      */
@@ -159,6 +159,46 @@ public class BpmController extends BaseController {
             return this.buildError(exp.getMessage());
         }
     }
+
+
+    /**
+     * 完成自己任务
+     *
+     * @return
+     */
+    @RequestMapping("/finish/task")
+    @ResponseBody
+    public Map<String, Object> finishTask(@RequestBody Map map) {
+        try {
+            this.bpmService.finishTask(map);
+            return this.buildSuccess();
+        } catch (Exception exp) {
+            return this.buildError(exp.getMessage());
+        }
+    }
+
+
+
+    /**
+     *    通过任务id查看流程图
+     *
+     * @return
+     */
+    @RequestMapping("/select/processImgByTaskId")
+    @ResponseBody
+    public Map<String, Object> processImgByTaskId(@RequestParam String taskId) {
+        try {
+            String data = bpmService.selectProcessImg(taskId);
+            return this.buildSuccess(data);
+        } catch (Exception exp) {
+            System.out.println(exp);
+            return this.buildError(exp.getMessage());
+        }
+
+    }
+
+
+
 
 
 }
