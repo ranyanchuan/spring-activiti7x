@@ -58,13 +58,13 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
     @Override
     public Map<String, Object> selectListProcessDeployment(Map param) {
         Map newParam = checkPageSize(param);
-        Integer pageIndex = (Integer) newParam.get("pageIndex");
-        Integer size = (Integer) newParam.get("size");
+        Integer pageSize = (Integer) newParam.get("pageSize");
+        Integer pageNumber = (Integer) newParam.get("pageNumber");
 
         // 获取流程部署总算
         Integer count = Math.toIntExact(repositoryService.createDeploymentQuery().count());
 
-        List<Deployment> list = repositoryService.createDeploymentQuery().listPage(pageIndex * size, (pageIndex + 1) * size);
+        List<Deployment> list = repositoryService.createDeploymentQuery().listPage(pageNumber *pageSize , ( pageNumber+ 1) * pageSize);
 
         // 数据处理
         List<Map> newList = new ArrayList<>();
@@ -75,6 +75,16 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
             map.put("id", deployment.getId());
             map.put("name", deployment.getName());
             map.put("deploymentTime", deployment.getDeploymentTime());
+
+            // 查询流程定义对象
+            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+            map.put("processDefinitionId", processDefinition.getId());// 流程定义id
+            map.put("processDefinitionName", processDefinition.getName());// 流程定义名称
+            map.put("key", processDefinition.getKey());// 流程定义key
+            map.put("version", processDefinition.getVersion());// 流程定义版本
+            map.put("resourceName", processDefinition.getResourceName());// 流程部署id
+            map.put("diagramResourceName",  processDefinition.getDiagramResourceName());// 流程部署id
+
             newList.add(map);
         }
         return this.queryListSuccess(newList, count, param); //查询成功;
@@ -111,15 +121,15 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
     public Map<String, Object> selectListProcessDefinition(Map param) {
 
         Map newParam = checkPageSize(param);
-        Integer pageIndex = (Integer) newParam.get("pageIndex");
-        Integer size = (Integer) newParam.get("size");
+        Integer pageSize = (Integer) newParam.get("pageSize");
+        Integer pageNumber = (Integer) newParam.get("pageNumber");
 
         // 获取流程定义总算
         Integer count = Math.toIntExact(repositoryService.createProcessDefinitionQuery().count());
 
         //获取查询器
         List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery()
-                .orderByProcessDefinitionVersion().desc().listPage(pageIndex * size, (pageIndex + 1) * size);
+                .orderByProcessDefinitionVersion().desc().listPage(pageNumber *pageSize , ( pageNumber+ 1) * pageSize);
 
         List<Map> newList = new ArrayList<>();
 
@@ -131,6 +141,8 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
             map.put("key", processDefinition.getKey());// 流程定义key
             map.put("version", processDefinition.getVersion());// 流程定义版本
             map.put("deploymentId", processDefinition.getDeploymentId());// 流程部署id
+            map.put("resourceName", processDefinition.getResourceName());// 流程部署id
+            map.put("diagramResourceName",  processDefinition.getDiagramResourceName());// 流程部署id
             newList.add(map);
         }
         return this.queryListSuccess(newList, count, param); //查询成功
@@ -168,8 +180,8 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
     public Map<String, Object> selectListSelfTask(Map param) {
 
         Map newParam = checkPageSize(param);
-        Integer pageIndex = (Integer) newParam.get("pageIndex");
-        Integer size = (Integer) newParam.get("size");
+        Integer pageSize = (Integer) newParam.get("pageSize");
+        Integer pageNumber = (Integer) newParam.get("pageNumber");
 
         // todo 从token 中获取
         // 设置办理人
@@ -177,7 +189,7 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
         // 查询总数
         Integer count = Math.toIntExact(taskService.createTaskQuery().taskAssignee(assignee).count());
 
-        List<Task> list = this.taskService.createTaskQuery().taskAssignee(assignee).listPage(pageIndex * size, (pageIndex + 1) * size);
+        List<Task> list = this.taskService.createTaskQuery().taskAssignee(assignee).listPage(pageNumber *pageSize , ( pageNumber+ 1) * pageSize);
 
         List<Map> newList = new ArrayList<>();
         for (Task task : list) {

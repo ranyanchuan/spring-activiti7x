@@ -12,10 +12,10 @@ public class BaseServiceImpl {
     public Map<String, Object> queryListSuccess(Object data, Integer count, Map param) {
         param = checkPageSize(param); // 对分页信息处理
         Map<String, Object> map = new HashMap<>();
-        map.put("data", data);
-        map.put("pageIndex", param.get("pageIndex"));
-        map.put("size", param.get("size"));
-        map.put("count", count);
+        map.put("rows", data);
+        map.put("pageNumber", param.get("pageNumber"));
+        map.put("pageSize", param.get("pageSize"));
+        map.put("total", count);
         return map;
     }
 
@@ -57,10 +57,10 @@ public class BaseServiceImpl {
 
     public Map checkPageSize(Map map) {
 
-        Integer size = map.get("size") != null ? (Integer) map.get("size") : 10;
-        Integer pageIndex = map.get("pageIndex") != null ? (Integer) map.get("pageIndex") : 0;
-        map.put("size", size);
-        map.put("pageIndex", pageIndex);
+        Integer pageNumber = map.get("pageNumber") != null ? (Integer) map.get("pageNumber") : 10;
+        Integer pageSize = map.get("pageSize") != null ? (Integer) map.get("pageSize") : 0;
+        map.put("pageNumber", pageNumber);
+        map.put("pageSize", pageSize);
         return map;
     }
 
