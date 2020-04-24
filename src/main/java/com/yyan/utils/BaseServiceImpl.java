@@ -55,12 +55,13 @@ public class BaseServiceImpl {
     }
 
 
-    public Map checkPageSize(Map map) {
+    public Map checkPageSize(Map<String,Object> map) {
 
-        Integer pageNumber = map.get("pageNumber") != null ? (Integer) map.get("pageNumber") : 10;
-        Integer pageSize = map.get("pageSize") != null ? (Integer) map.get("pageSize") : 0;
+        Integer pageSize = map.get("pageSize") != null ? (Integer) map.get("pageSize") : 10;
+        Integer pageNumber = map.get("pageNumber") != null ? (Integer) map.get("pageNumber") : 0;
         map.put("pageNumber", pageNumber);
         map.put("pageSize", pageSize);
+
         return map;
     }
 

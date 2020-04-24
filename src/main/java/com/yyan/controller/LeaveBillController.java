@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/leaveBill")
+@RequestMapping("/api/leaveBill")
 public class LeaveBillController extends BaseController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class LeaveBillController extends BaseController {
      */
     @RequestMapping("/select")
     @ResponseBody
-    public Map<String, Object> getBlock(@RequestBody Map map) {
+    public Map<String, Object> getBlock(@RequestBody Map<String,Object> map) {
         try {
             return this.buildSuccess(this.leaveBillService.selectListLeaveBill(map));
         } catch (Exception exp) {

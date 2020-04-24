@@ -26,6 +26,11 @@ public class LeaveBillServiceImpl extends BaseServiceImpl implements LeaveBillSe
     @Override
     public void insertLeaveBill(LeaveBill leaveBill) {
 
+        // todo 常量
+        leaveBill.setState("0");
+        // todo 通过token获取
+        leaveBill.setUserId("1");
+
         leaveBillDao.insertLeaveBill(leaveBill);
     }
 
@@ -38,9 +43,17 @@ public class LeaveBillServiceImpl extends BaseServiceImpl implements LeaveBillSe
     @Override
     public Map<String, Object> selectListLeaveBill(Map map) {
 
+
+       Map mp= checkPageSize(map);
+        System.out.println(mp);
+
+
+
         List<Map> newList = this.leaveBillDao.selectListLeaveBill(checkPageSize(map));
 
         Integer count = this.leaveBillDao.countListLeaveBill(map);
+        System.out.println(newList);
+
         return this.queryListSuccess(newList, count, map); //查询成功
 
     }
