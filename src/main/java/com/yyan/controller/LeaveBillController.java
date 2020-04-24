@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
@@ -43,6 +44,22 @@ public class LeaveBillController extends BaseController {
         try {
             return this.buildSuccess(this.leaveBillService.selectListLeaveBill(map));
         } catch (Exception exp) {
+            return this.buildError(exp.getMessage());
+        }
+    }
+
+    /**
+     * 添加请假单
+     */
+    @RequestMapping("/delete")
+    @ResponseBody
+    public Map<String, Object> insertUser(@RequestParam String id) {
+
+        try {
+            this.leaveBillService.deleteLeaveBill(id);
+            return this.buildSuccess();
+        } catch (Exception exp) {
+            System.out.println(exp);
             return this.buildError(exp.getMessage());
         }
     }

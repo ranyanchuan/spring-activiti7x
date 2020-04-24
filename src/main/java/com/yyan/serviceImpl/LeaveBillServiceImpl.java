@@ -31,7 +31,13 @@ public class LeaveBillServiceImpl extends BaseServiceImpl implements LeaveBillSe
         // todo 通过token获取
         leaveBill.setUserId("1");
 
-        leaveBillDao.insertLeaveBill(leaveBill);
+        System.out.println("leaveBill.getId()"+leaveBill.getId());
+
+        if (leaveBill.getId() != null) {
+            leaveBillDao.updateLeaveBill(leaveBill);
+        } else {
+            leaveBillDao.insertLeaveBill(leaveBill);
+        }
     }
 
     /**
@@ -42,18 +48,8 @@ public class LeaveBillServiceImpl extends BaseServiceImpl implements LeaveBillSe
      */
     @Override
     public Map<String, Object> selectListLeaveBill(Map map) {
-
-
-       Map mp= checkPageSize(map);
-        System.out.println(mp);
-
-
-
-        List<Map> newList = this.leaveBillDao.selectListLeaveBill(checkPageSize(map));
-
-        Integer count = this.leaveBillDao.countListLeaveBill(map);
-        System.out.println(newList);
-
+        List<Map> newList = leaveBillDao.selectListLeaveBill(checkPageSize(map));
+        Integer count = leaveBillDao.countListLeaveBill(map);
         return this.queryListSuccess(newList, count, map); //查询成功
 
     }
@@ -65,6 +61,6 @@ public class LeaveBillServiceImpl extends BaseServiceImpl implements LeaveBillSe
 
     @Override
     public void deleteLeaveBill(String id) {
-
+        leaveBillDao.deleteLeaveBill(id);
     }
 }
