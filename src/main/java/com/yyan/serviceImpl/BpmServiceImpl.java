@@ -61,6 +61,8 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
         Integer pageSize = (Integer) newParam.get("pageSize");
         Integer pageNumber = (Integer) newParam.get("pageNumber");
 
+        System.out.println(pageNumber+"---"+pageSize);
+
         // 获取流程部署总算
         Integer count = Math.toIntExact(repositoryService.createDeploymentQuery().count());
 
@@ -102,7 +104,8 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
         // 查询流程定义对象
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
         // 获取图片名称
-        String resourceName = processDefinition.getDiagramResourceName();
+        String resourceName = processDefinition.getResourceName();
+        // String resourceName = processDefinition.getDiagramResourceName();
         System.out.println("resourceName");
         System.out.println(resourceName);
 

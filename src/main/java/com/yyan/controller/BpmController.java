@@ -17,10 +17,8 @@ import java.util.Map;
 @RequestMapping("/api/bpm/")
 public class BpmController extends BaseController {
 
-
     @Autowired
     private BpmServiceImpl bpmService;
-
 
     /**
      * 流程部署  act_re_deployment   ACT_RE_PROCDEF
