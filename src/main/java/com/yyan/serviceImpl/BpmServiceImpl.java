@@ -37,6 +37,11 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
      */
     @Override
     public void deployment() {
+
+
+        // todo 流程部署前检查其他流程是否启动
+
+
         // 3.进行部署
         Deployment deployment = repositoryService.createDeployment()
                 .addClasspathResource("diagram.bpmn")  //添加bpmn资源
@@ -86,6 +91,7 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
             map.put("version", processDefinition.getVersion());// 流程定义版本
             map.put("resourceName", processDefinition.getResourceName());// 流程部署id
             map.put("diagramResourceName",  processDefinition.getDiagramResourceName());// 流程部署id
+            map.put("isSuspended", processDefinition.isSuspended()); // 流程定义是否终止
 
             newList.add(map);
         }
@@ -146,6 +152,7 @@ public class BpmServiceImpl extends BaseServiceImpl implements BpmService {
             map.put("deploymentId", processDefinition.getDeploymentId());// 流程部署id
             map.put("resourceName", processDefinition.getResourceName());// 流程部署id
             map.put("diagramResourceName",  processDefinition.getDiagramResourceName());// 流程部署id
+            map.put("isSuspended", processDefinition.isSuspended()); // 流程定义是否终止
             newList.add(map);
         }
         return this.queryListSuccess(newList, count, param); //查询成功
