@@ -1,17 +1,12 @@
 package com.yyan.serviceImpl;
-
-import com.yyan.pojo.LeaveBill;
 import com.yyan.service.BpmService;
 import com.yyan.utils.BaseServiceImpl;
 import org.activiti.engine.*;
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
-import org.apache.catalina.manager.util.SessionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
